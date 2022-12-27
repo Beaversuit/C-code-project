@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <string.h>
+int main ()
+{
+FILE *fp;
+fp = fopen ("createfile.txt", "w+");
+pid_t pid;
+pid = fork ();
+if (pid == 0)
+{
+printf ("************ Child process ************\n");
+fputs ("This is the child process writing.\n", fp);
+rewind (fp);
+int i=fgetc(fp);
+while (i != EOF)
+{
+putchar(i);
+i = fgetc(fp);
+}
+}
+else if (pid > 0)
+{
+wait (NULL);
+printf ("************ Parent process ************\n");
+fputs ("This is the parent process writing.\n",fp);
+rewind (fp);
+int i=fgetc(fp);
+while (i != EOF)
+{
+putchar(i);
+i = fgetc(fp);
+}
+}
+fclose(fp);
+return 0;
+}
