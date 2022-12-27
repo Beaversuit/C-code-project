@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <stdlib.h>
+int array[1000];
+int array_size;
+// Thread function to calculate sum
+void *sum_thread (void *arg)
+{
+int sum = 0;
+for (int i = 0; i < array_size; i++)
+{
+sum += array[i];
+}
+return (void *) sum;
+}
+// Thread function to find maximum and minimum elements
+void * min_max_thread (void *arg)
+{
+int min = array[0];
+int max = array[0];
+for (int i = 1; i < array_size; i++)
+{
+if (min > array[i])
+{
+min = array[i];
+}
+if (max < array[i])
+{
+max = array[i];
+}
+}
+int *min_max = malloc (2 * sizeof *min_max);
+min_max[0] = min;
+min_max[1] = max;
+return min_max;
+}
+int main (int argc, char *argv[])
+{
+// Read array size and elements from the user
+printf ("Enter the number of elements in the array: ");
+scanf ("%d", &array_size);
+printf ("Enter the elements of the array: ");
+for (int i = 0; i < array_size; i++)
+{
+scanf ("%d", &array[i]);
+}
+pthread_t sum_thread_id;
+pthread_t min_max_thread_id;
+// Create threads
+pthread_create (&sum_thread_id, NULL, sum_thread, NULL);
+pthread_create (&min_max_thread_id, NULL, min_max_thread, NULL);
+// Wait for threads to finish
+void *sum_result;
+void *min_max_result;
+pthread_join (sum_thread_id, &sum_result);
+pthread_join (min_max_thread_id, &min_max_result);
+// Print results
+printf ("Sum: %d\n", (int) sum_result);
+int *min_max = (int *) min_max_result;
+printf ("Minimum: %d\n", min_max[0]);
+printf ("Maximum: %d\n", min_max[1]);
+return 0;
+}
