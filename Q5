@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <pthread.h>
+// global array to store the combined result
+int result[5 * 20];
+// function that each thread will execute
+void * fill_array (void *arg)
+{
+// each thread will be passed an argument indicating its thread number
+int thread_num = (long) arg;
+// fill the array with numbers starting from the thread number * 20 + 1
+// e.g. thread 0 will fill the array with numbers 1 to 20, thread 1 will
+fill the array with numbers 21 to 40, etc.
+for (int i = 0; i < 20; i++)
+{
+result[thread_num * 20 + i] = thread_num * 20 + i + 1;
+}
+return NULL;
+}
+int main ()
+{
+pthread_t threads[5];
+int thread_nums[5];
+// create and start the threads
+for (int i = 0; i < 5; i++)
+{
+thread_nums[i] = i;
+pthread_create (&threads[i], NULL, fill_array, thread_nums[i]);
+}
+// wait for all threads to complete
+for (int i = 0; i < 5; i++)
+{
+pthread_join (threads[i], NULL);
+}
+// print the combined result array
+printf ("Result array: [");
+for (int i = 0; i < 5 * 20; i++)
+{
+printf ("%d, ", result[i]);
+}
+printf ("]\n");
+return 0;
+}
