@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+int main()
+{
+pid_t pid;
+pid = fork();
+if (pid == 0)
+{
+printf("PID in child is %d \n", getpid());
+printf("This is the child process\n");
+}
+else if (pid > 0)
+{
+int w = wait(NULL);
+printf("PID in parent is %d \n", getpid());
+printf("This is the parent process\n");
+printf("Wait() returns %d\n", w);
+}
+else
+{
+printf("Error Occurred during fork()");
+}
+return 0;
+}
