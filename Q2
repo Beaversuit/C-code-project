@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+int main()
+{
+pid_t pid;
+pid = fork();
+if (pid == 0)
+{
+char *argv[] = {NULL};
+char *envp[] = {NULL};
+execl("/bin/ls", "ls", NULL);
+execlp("ls", "ls", NULL);
+execle("/bin/ls", "ls", NULL, envp);
+execv("/bin/ls", argv);
+execvp("ls", argv);
+execvpe("ls", argv, envp); //Warning for some reason
+}
+else if (pid > 0)
+{
+wait(NULL);
+}
+else
+{
+printf("Error occurred during fork()");
+}
+}
